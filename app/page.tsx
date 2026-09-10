@@ -4,12 +4,14 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Search, Sliders, Zap, List, Bell, User } from 'lucide-react'
+import { Search, Sliders, Zap, List, ListX, Bell, User } from 'lucide-react'
 import FeaturedCard from '@/components/FeaturedCard'
 import EventCard from '@/components/EventCard'
 import { events } from '@/lib/dummy-data'
 
-const CATS = ['Semua', 'Makassar', 'Jakarta', 'Rock', 'Pop', 'Jazz', 'Indie', 'R&B', 'Folk']
+const ALL = 'Semua'
+const CITIES = [ALL, ...new Set(events.map(event => event.city))]
+const GENRES = [ALL, ...new Set(events.map(event => event.genre))]
 
 function getGreeting() {
   const h = new Date().getHours()
@@ -21,11 +23,20 @@ function getGreeting() {
 }
 
 export default function HomePage() {
-  const [cat, setCat] = useState('Semua')
+  const [city, setCity] = useState(ALL)
+  const [genre, setGenre] = useState(ALL)
   const router = useRouter()
 
   const featured = events.filter(e => e.isHot)
-  const list     = cat === 'Semua' ? events : events.filter(e => e.city === cat || e.genre === cat)
+  const list = events.filter(event => (
+    (city === ALL || event.city === city) &&
+    (genre === ALL || event.genre === genre)
+  ))
+
+  const resetFilters = () => {
+    setCity(ALL)
+    setGenre(ALL)
+  }
 
   return (
     <div className="flex flex-col pb-28">
@@ -109,22 +120,42 @@ export default function HomePage() {
         ))}
       </div>
 
-      {/* ── Category chips ── */}
-      <div className="flex gap-2 px-5 pb-5 overflow-x-auto no-scrollbar">
-        {CATS.map(c => (
-          <motion.button
-            key={c}
-            whileTap={{ scale: 0.88 }}
-            className={`flex-shrink-0 px-4 py-1.5 rounded-full text-[12px] font-bold border transition-colors ${
-              cat === c
-                ? 'bg-wt-accent border-wt-accent text-white'
-                : 'bg-wt-card border-wt-border text-wt-muted'
-            }`}
-            onClick={() => setCat(c)}
-          >
-            {c}
-          </motion.button>
-        ))}
+      {/* ── Event filters ── */}
+      <div className="space-y-2 pb-5">
+        <div className="flex gap-2 px-5 overflow-x-auto no-scrollbar" role="group" aria-label="Filter kota">
+          {CITIES.map(option => (
+            <motion.button
+              key={option}
+              whileTap={{ scale: 0.88 }}
+              className={`flex-shrink-0 px-4 py-1.5 rounded-full text-[12px] font-bold border transition-colors ${
+                city === option
+                  ? 'bg-wt-accent border-wt-accent text-white'
+                  : 'bg-wt-card border-wt-border text-wt-muted'
+              }`}
+              onClick={() => setCity(option)}
+              aria-pressed={city === option}
+            >
+              {option === ALL ? 'Semua Kota' : option}
+            </motion.button>
+          ))}
+        </div>
+        <div className="flex gap-2 px-5 overflow-x-auto no-scrollbar" role="group" aria-label="Filter genre">
+          {GENRES.map(option => (
+            <motion.button
+              key={option}
+              whileTap={{ scale: 0.88 }}
+              className={`flex-shrink-0 px-4 py-1.5 rounded-full text-[12px] font-bold border transition-colors ${
+                genre === option
+                  ? 'bg-wt-accent border-wt-accent text-white'
+                  : 'bg-wt-card border-wt-border text-wt-muted'
+              }`}
+              onClick={() => setGenre(option)}
+              aria-pressed={genre === option}
+            >
+              {option === ALL ? 'Semua Genre' : option}
+            </motion.button>
+          ))}
+        </div>
       </div>
 
       {/* ── Event list ── */}
@@ -136,18 +167,32 @@ export default function HomePage() {
         <span className="text-[12px] text-wt-muted font-medium">{list.length} konser</span>
       </div>
 
-      <div className="flex flex-col gap-2.5 px-5">
-        {list.map((event, i) => (
-          <motion.div
-            key={event.id}
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.04 + 0.1, duration: 0.28 }}
+      {list.length === 0 ? (
+        <div className="flex flex-col items-center px-5 py-10 text-center">
+          <ListX size={40} className="mb-3 text-wt-muted" strokeWidth={1.5} />
+          <p className="font-semibold text-wt-text">Belum ada konser yang cocok</p>
+          <p className="mt-1 text-sm text-wt-muted">Coba kota atau genre lainnya.</p>
+          <button
+            className="mt-4 rounded-xl border border-wt-border bg-wt-card px-4 py-2 text-xs font-bold text-wt-text"
+            onClick={resetFilters}
           >
-            <EventCard event={event} />
-          </motion.div>
-        ))}
-      </div>
+            Reset Filter
+          </button>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-2.5 px-5">
+          {list.map((event, i) => (
+            <motion.div
+              key={event.id}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.04 + 0.1, duration: 0.28 }}
+            >
+              <EventCard event={event} />
+            </motion.div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
