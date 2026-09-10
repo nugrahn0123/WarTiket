@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { useRouter } from 'next/navigation'
 import { Search, X, TrendingUp, Zap, Star, Music, Headphones, Mic, Music2, SearchX } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import EventCard from '@/components/EventCard'
@@ -19,7 +18,6 @@ const GENRES: { name: string; Icon: LucideIcon; gradient: string }[] = [
 
 export default function ExplorePage() {
   const [query, setQuery] = useState('')
-  const router = useRouter()
 
   const results = query.trim()
     ? events.filter(e =>
@@ -91,10 +89,7 @@ export default function ExplorePage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.07 + 0.2 }}
                 >
-                  <EventCard
-                    event={event}
-                    onClick={() => router.push(`/event/${event.id}`)}
-                  />
+                  <EventCard event={event} />
                 </motion.div>
               ))}
             </div>
@@ -120,10 +115,7 @@ export default function ExplorePage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
                 >
-                  <EventCard
-                    event={event}
-                    onClick={() => router.push(`/event/${event.id}`)}
-                  />
+                  <EventCard event={event} />
                 </motion.div>
               ))}
             </div>

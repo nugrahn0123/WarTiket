@@ -92,7 +92,7 @@ export default function HomePage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: i * 0.09, duration: 0.32 }}
           >
-            <FeaturedCard event={event} onClick={() => router.push(`/event/${event.id}`)} />
+            <FeaturedCard event={event} />
           </motion.div>
         ))}
       </div>
@@ -132,7 +132,7 @@ export default function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.04 + 0.1, duration: 0.28 }}
           >
-            <EventCard event={event} onClick={() => router.push(`/event/${event.id}`)} />
+            <EventCard event={event} />
           </motion.div>
         ))}
       </div>

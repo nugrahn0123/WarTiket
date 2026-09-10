@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import Link from 'next/link'
 import { Flame, MapPin, Calendar } from 'lucide-react'
 import { type Event, formatPrice } from '@/lib/dummy-data'
 
@@ -42,55 +43,55 @@ function CoverDeco({ id }: { id: number }) {
   )
 }
 
-interface FeaturedCardProps {
-  event: Event
-  onClick: () => void
-}
-
-export default function FeaturedCard({ event, onClick }: FeaturedCardProps) {
+export default function FeaturedCard({ event }: { event: Event }) {
   return (
-    <motion.div
-      className="flex-shrink-0 w-[260px] rounded-3xl overflow-hidden bg-wt-card cursor-pointer"
-      whileHover={{ y: -6, boxShadow: '0 24px 64px rgba(0,0,0,0.7)' }}
-      whileTap={{ scale: 0.96 }}
-      onClick={onClick}
+    <Link
+      href={`/event/${event.id}`}
+      className="block w-[260px] flex-shrink-0 rounded-3xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wt-accent"
+      aria-label={`${event.title} oleh ${event.artist}`}
     >
-      {/* Cover art */}
-      <div
-        className="relative w-full h-[155px] overflow-hidden"
-        style={{ background: event.gradient }}
+      <motion.article
+        className="overflow-hidden rounded-3xl bg-wt-card cursor-pointer"
+        whileHover={{ y: -6, boxShadow: '0 24px 64px rgba(0,0,0,0.7)' }}
+        whileTap={{ scale: 0.96 }}
       >
-        <CoverDeco id={event.id} />
-        {/* Artist initial watermark */}
-        <div className="absolute bottom-3 left-4 text-[42px] font-black text-white/20 leading-none select-none">
-          {event.artist.charAt(0)}
-        </div>
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-wt-card to-transparent" />
-        {event.isHot && (
-          <div className="absolute top-3 left-3 bg-wt-accent text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider flex items-center gap-1">
-            <Flame size={8} strokeWidth={3} />
-            Hot
+        {/* Cover art */}
+        <div
+          className="relative w-full h-[155px] overflow-hidden"
+          style={{ background: event.gradient }}
+        >
+          <CoverDeco id={event.id} />
+          {/* Artist initial watermark */}
+          <div className="absolute bottom-3 left-4 text-[42px] font-black text-white/20 leading-none select-none">
+            {event.artist.charAt(0)}
           </div>
-        )}
-      </div>
+          <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-wt-card to-transparent" />
+          {event.isHot && (
+            <div className="absolute top-3 left-3 bg-wt-accent text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider flex items-center gap-1">
+              <Flame size={8} strokeWidth={3} />
+              Hot
+            </div>
+          )}
+        </div>
 
-      {/* Info */}
-      <div className="px-4 pb-4 pt-2">
-        <p className="text-[10px] text-wt-muted uppercase tracking-[0.15em] font-bold mb-1.5">{event.genre}</p>
-        <h3 className="text-[15px] font-black text-wt-text leading-tight mb-3 line-clamp-2 tracking-tight">{event.title}</h3>
-        <div className="flex items-center gap-1.5 text-wt-muted text-[11px] mb-1">
-          <Calendar size={10} strokeWidth={2.5} />
-          <span>{event.date}</span>
+        {/* Info */}
+        <div className="px-4 pb-4 pt-2">
+          <p className="text-[10px] text-wt-muted uppercase tracking-[0.15em] font-bold mb-1.5">{event.genre}</p>
+          <h3 className="text-[15px] font-black text-wt-text leading-tight mb-3 line-clamp-2 tracking-tight">{event.title}</h3>
+          <div className="flex items-center gap-1.5 text-wt-muted text-[11px] mb-1">
+            <Calendar size={10} strokeWidth={2.5} />
+            <span>{event.date}</span>
+          </div>
+          <div className="flex items-center gap-1.5 text-wt-muted text-[11px] mb-4">
+            <MapPin size={10} strokeWidth={2.5} />
+            <span className="truncate">{event.city}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-[16px] font-black text-wt-accent">{formatPrice(event.price)}</span>
+            <span className="text-[11px] text-wt-muted">{event.seats.toLocaleString()} kursi</span>
+          </div>
         </div>
-        <div className="flex items-center gap-1.5 text-wt-muted text-[11px] mb-4">
-          <MapPin size={10} strokeWidth={2.5} />
-          <span className="truncate">{event.city}</span>
-        </div>
-        <div className="flex items-center justify-between">
-          <span className="text-[16px] font-black text-wt-accent">{formatPrice(event.price)}</span>
-          <span className="text-[11px] text-wt-muted">{event.seats.toLocaleString()} kursi</span>
-        </div>
-      </div>
-    </motion.div>
+      </motion.article>
+    </Link>
   )
 }
