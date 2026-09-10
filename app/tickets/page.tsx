@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
+import { QRCodeSVG } from 'qrcode.react'
 import TopBar from '@/components/TopBar'
 import { myTickets, formatPrice } from '@/lib/dummy-data'
 import { getPurchasedTickets } from '@/lib/ticket-storage'
@@ -130,20 +131,19 @@ export default function TicketsPage() {
 
                     {/* Bottom half */}
                     <div className="flex items-center justify-between p-4">
-                      {/* QR placeholder */}
-                      <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center">
-                        <svg viewBox="0 0 40 40" width="44" height="44">
-                          <rect x="2"  y="2"  width="14" height="14" rx="2" fill="#000" />
-                          <rect x="5"  y="5"  width="8"  height="8"  rx="1" fill="#fff" />
-                          <rect x="24" y="2"  width="14" height="14" rx="2" fill="#000" />
-                          <rect x="27" y="5"  width="8"  height="8"  rx="1" fill="#fff" />
-                          <rect x="2"  y="24" width="14" height="14" rx="2" fill="#000" />
-                          <rect x="5"  y="27" width="8"  height="8"  rx="1" fill="#fff" />
-                          <rect x="24" y="24" width="6"  height="6"  rx="1" fill="#000" />
-                          <rect x="32" y="24" width="6"  height="6"  rx="1" fill="#000" />
-                          <rect x="24" y="32" width="6"  height="6"  rx="1" fill="#000" />
-                          <rect x="32" y="32" width="6"  height="6"  rx="1" fill="#000" />
-                        </svg>
+                      <div
+                        className="w-14 h-14 bg-white rounded-xl flex items-center justify-center"
+                        role="img"
+                        aria-label={`Kode QR tiket ${ticket.id}`}
+                      >
+                        <QRCodeSVG
+                          value={ticket.qrCode}
+                          size={44}
+                          bgColor="#ffffff"
+                          fgColor="#000000"
+                          level="M"
+                          aria-hidden="true"
+                        />
                       </div>
                       <div className="text-right">
                         <span className={`text-xs font-bold px-3 py-1 rounded-full ${cfg.bg} ${cfg.text} block mb-1.5`}>
