@@ -2,17 +2,18 @@
 
 import { use, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import {
   ArrowLeft, Heart, MapPin, Calendar, Music, Users,
-  ChevronDown, ChevronUp, Minus, Plus,
+  ChevronDown, ChevronUp, Minus, Plus, TicketX,
 } from 'lucide-react'
 import { events, formatPrice, getSeatsColor } from '@/lib/dummy-data'
 
 export default function EventDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
   const router  = useRouter()
-  const event   = events.find(e => e.id === parseInt(id))
+  const event   = events.find(candidate => String(candidate.id) === id)
 
   const [qty,      setQty]      = useState(1)
   const [liked,    setLiked]    = useState(false)
@@ -20,8 +21,18 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
 
   if (!event) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <p className="text-wt-muted">Event tidak ditemukan</p>
+      <div className="flex min-h-screen flex-col items-center justify-center px-5 text-center">
+        <TicketX size={52} className="mb-4 text-wt-muted" strokeWidth={1.4} />
+        <h1 className="text-xl font-bold text-wt-text">Konser tidak ditemukan</h1>
+        <p className="mt-2 max-w-xs text-sm leading-relaxed text-wt-muted">
+          Konser ini mungkin sudah tidak tersedia atau alamatnya tidak tepat.
+        </p>
+        <Link
+          href="/"
+          className="mt-6 rounded-xl bg-wt-accent px-5 py-3 text-sm font-bold text-white"
+        >
+          Jelajahi Konser
+        </Link>
       </div>
     )
   }
