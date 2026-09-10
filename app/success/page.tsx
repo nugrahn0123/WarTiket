@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { AlertTriangle, Check } from 'lucide-react'
 import { formatPrice } from '@/lib/dummy-data'
-import { calculateOrderTotal, getCheckout } from '@/lib/checkout'
+import { calculateOrderTotal, getCheckout, isValidInvoiceNumber } from '@/lib/checkout'
 
 const METHOD_LABELS: Record<string, string> = {
   transfer: 'Transfer Bank',
@@ -19,8 +19,14 @@ function SuccessContent() {
   const searchParams = useSearchParams()
   const checkout     = getCheckout(searchParams)
   const method       = searchParams.get('method')
+  const invoice      = searchParams.get('invoice')
 
-  if (!checkout || !method || !(method in METHOD_LABELS)) {
+  if (
+    !checkout ||
+    !method ||
+    !Object.hasOwn(METHOD_LABELS, method) ||
+    !isValidInvoiceNumber(invoice)
+  ) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center px-5 text-center">
         <AlertTriangle size={48} className="mb-4 text-wt-yellow" strokeWidth={1.5} />
@@ -40,10 +46,6 @@ function SuccessContent() {
 
   const { event, quantity } = checkout
   const total = calculateOrderTotal(event.price, quantity)
-
-  const date   = new Date()
-  const pad    = (n: number) => String(n).padStart(2, '0')
-  const invoice = `INV-${date.getFullYear()}${pad(date.getMonth() + 1)}${pad(date.getDate())}-${pad(Math.floor(Math.random() * 9999))}`
 
   const rows = [
     { k: 'No. Invoice', v: invoice },

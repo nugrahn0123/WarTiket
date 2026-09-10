@@ -6,7 +6,12 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { AlertTriangle, Landmark, CreditCard, Wallet, QrCode } from 'lucide-react'
 import TopBar from '@/components/TopBar'
 import { formatPrice } from '@/lib/dummy-data'
-import { calculateOrderTotal, getCheckout, SERVICE_FEE } from '@/lib/checkout'
+import {
+  calculateOrderTotal,
+  createInvoiceNumber,
+  getCheckout,
+  SERVICE_FEE,
+} from '@/lib/checkout'
 
 const METHODS = [
   { id: 'transfer', label: 'Transfer', Icon: Landmark   },
@@ -49,8 +54,10 @@ function PaymentContent() {
 
   const handlePay = () => {
     setLoading(true)
+    const invoice = createInvoiceNumber()
+
     setTimeout(() => {
-      router.push(`/success?eventId=${event.id}&qty=${quantity}&method=${method}`)
+      router.push(`/success?eventId=${event.id}&qty=${quantity}&method=${method}&invoice=${invoice}`)
     }, 1400)
   }
 

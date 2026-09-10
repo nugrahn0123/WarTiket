@@ -29,3 +29,18 @@ export function getCheckout(searchParams: Pick<URLSearchParams, 'get'>): Checkou
 export function calculateOrderTotal(price: number, quantity: number): number {
   return price * quantity + SERVICE_FEE
 }
+
+export function createInvoiceNumber(date = new Date()): string {
+  const datePart = [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, '0'),
+    String(date.getDate()).padStart(2, '0'),
+  ].join('')
+  const reference = crypto.randomUUID().slice(0, 8).toUpperCase()
+
+  return `INV-${datePart}-${reference}`
+}
+
+export function isValidInvoiceNumber(value: string | null): value is string {
+  return Boolean(value && /^INV-\d{8}-[A-F0-9]{8}$/.test(value))
+}
