@@ -3,9 +3,10 @@
 import { useState, Suspense } from 'react'
 import { motion } from 'framer-motion'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Landmark, CreditCard, Wallet, QrCode } from 'lucide-react'
+import { AlertTriangle, Landmark, CreditCard, Wallet, QrCode } from 'lucide-react'
 import TopBar from '@/components/TopBar'
-import { events, formatPrice } from '@/lib/dummy-data'
+import { formatPrice } from '@/lib/dummy-data'
+import { calculateOrderTotal, getCheckout, SERVICE_FEE } from '@/lib/checkout'
 
 const METHODS = [
   { id: 'transfer', label: 'Transfer', Icon: Landmark   },
@@ -17,31 +18,47 @@ const METHODS = [
 function PaymentContent() {
   const router       = useRouter()
   const searchParams = useSearchParams()
-
-  const eventId  = parseInt(searchParams.get('eventId') ?? '1')
-  const qty      = parseInt(searchParams.get('qty') ?? '1')
-  const event    = events.find(e => e.id === eventId)
+  const checkout     = getCheckout(searchParams)
 
   const [method,  setMethod]  = useState('transfer')
   const [loading, setLoading] = useState(false)
 
-  if (!event) { router.push('/'); return null }
+  if (!checkout) {
+    return (
+      <div className="flex min-h-screen flex-col">
+        <TopBar variant="back" title="Pembayaran" />
+        <div className="flex flex-1 flex-col items-center justify-center px-5 text-center">
+          <AlertTriangle size={44} className="mb-4 text-wt-yellow" strokeWidth={1.5} />
+          <h1 className="text-lg font-bold text-wt-text">Pesanan tidak valid</h1>
+          <p className="mt-2 max-w-xs text-sm leading-relaxed text-wt-muted">
+            Pilih kembali konser dan jumlah tiket yang ingin dibeli.
+          </p>
+          <button
+            className="mt-6 rounded-xl bg-wt-accent px-5 py-3 text-sm font-bold text-white"
+            onClick={() => router.push('/')}
+          >
+            Kembali ke Beranda
+          </button>
+        </div>
+      </div>
+    )
+  }
 
-  const serviceFee = 10000
-  const total      = event.price * qty + serviceFee
+  const { event, quantity } = checkout
+  const total = calculateOrderTotal(event.price, quantity)
 
   const handlePay = () => {
     setLoading(true)
     setTimeout(() => {
-      router.push(`/success?eventId=${event.id}&qty=${qty}&total=${total}&method=${method}`)
+      router.push(`/success?eventId=${event.id}&qty=${quantity}&total=${total}&method=${method}`)
     }, 1400)
   }
 
   const rows = [
     { label: 'Harga tiket',   value: formatPrice(event.price) },
-    { label: 'Jumlah',        value: `${qty} tiket` },
-    { label: 'Subtotal',      value: formatPrice(event.price * qty) },
-    { label: 'Biaya layanan', value: formatPrice(serviceFee) },
+    { label: 'Jumlah',        value: `${quantity} tiket` },
+    { label: 'Subtotal',      value: formatPrice(event.price * quantity) },
+    { label: 'Biaya layanan', value: formatPrice(SERVICE_FEE) },
   ]
 
   return (
