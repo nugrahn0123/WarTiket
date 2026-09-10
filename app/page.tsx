@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Search, Sliders, Zap, List, Bell, User } from 'lucide-react'
 import FeaturedCard from '@/components/FeaturedCard'
@@ -67,17 +68,22 @@ export default function HomePage() {
       </div>
 
       {/* ── Search bar ── */}
-      <motion.div
-        className="mx-5 mb-6 flex items-center gap-3 bg-wt-card border border-wt-border rounded-2xl px-4 py-3.5 cursor-pointer"
-        whileTap={{ scale: 0.98 }}
-        onClick={() => router.push('/explore')}
+      <Link
+        href="/explore"
+        className="mx-5 mb-6 block rounded-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wt-accent"
+        aria-label="Cari konser, artis, atau kota"
       >
-        <Search size={16} className="text-wt-muted flex-shrink-0" />
-        <span className="text-wt-muted text-[13px] flex-1">Cari konser, artis, kota…</span>
-        <div className="w-8 h-8 rounded-xl bg-wt-border flex items-center justify-center flex-shrink-0">
-          <Sliders size={13} className="text-wt-muted" />
-        </div>
-      </motion.div>
+        <motion.div
+          className="flex items-center gap-3 bg-wt-card border border-wt-border rounded-2xl px-4 py-3.5 cursor-pointer"
+          whileTap={{ scale: 0.98 }}
+        >
+          <Search size={16} className="text-wt-muted flex-shrink-0" />
+          <span className="text-wt-muted text-[13px] flex-1">Cari konser, artis, kota…</span>
+          <div className="w-8 h-8 rounded-xl bg-wt-border flex items-center justify-center flex-shrink-0">
+            <Sliders size={13} className="text-wt-muted" />
+          </div>
+        </motion.div>
+      </Link>
 
       {/* ── Featured section ── */}
       <div className="flex justify-between items-center px-5 mb-3">
@@ -85,7 +91,9 @@ export default function HomePage() {
           <Zap size={15} className="text-wt-accent" fill="#f97316" />
           Sedang Ramai
         </span>
-        <button className="text-[12px] text-wt-accent font-bold">Lihat semua</button>
+        <Link href="/explore" className="text-[12px] text-wt-accent font-bold">
+          Lihat semua
+        </Link>
       </div>
 
       <div className="flex gap-3 px-5 pb-6 overflow-x-auto no-scrollbar">
