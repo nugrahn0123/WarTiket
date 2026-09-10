@@ -9,6 +9,7 @@ import {
   ChevronDown, ChevronUp, Minus, Plus, TicketX,
 } from 'lucide-react'
 import { events, formatPrice, getSeatsColor } from '@/lib/dummy-data'
+import { MAX_TICKETS_PER_ORDER } from '@/lib/checkout'
 
 export default function EventDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
@@ -41,6 +42,8 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
   const total          = event.price * qty + serviceFee
   const color          = getSeatsColor(event.seats, event.totalSeats)
   const seatsPercent   = Math.round((event.seats / event.totalSeats) * 100)
+  const maxQuantity    = Math.min(MAX_TICKETS_PER_ORDER, event.seats)
+  const isSoldOut      = maxQuantity === 0
 
   const colorMap = {
     green:  { text: 'text-wt-green',  bar: 'bg-wt-green'  },
@@ -172,13 +175,17 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
         <div className="flex items-center justify-between bg-wt-card border border-wt-border rounded-2xl p-4 mb-5">
           <div>
             <p className="text-sm font-semibold text-wt-text">Jumlah Tiket</p>
-            <p className="text-xs text-wt-muted mt-0.5">Maks. 5 tiket per pembelian</p>
+            <p className="text-xs text-wt-muted mt-0.5">
+              {isSoldOut ? 'Tiket sudah habis' : `Maks. ${maxQuantity} tiket per pembelian`}
+            </p>
           </div>
           <div className="flex items-center gap-4">
             <motion.button
               whileTap={{ scale: 0.8 }}
-              className="w-9 h-9 rounded-xl bg-wt-border flex items-center justify-center text-wt-text"
+              className="w-9 h-9 rounded-xl bg-wt-border flex items-center justify-center text-wt-text disabled:cursor-not-allowed disabled:opacity-40"
               onClick={() => setQty(q => Math.max(1, q - 1))}
+              disabled={qty === 1 || isSoldOut}
+              aria-label="Kurangi jumlah tiket"
             >
               <Minus size={16} />
             </motion.button>
@@ -190,14 +197,17 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
                 animate={{ opacity: 1, y: 0,   scale: 1   }}
                 exit={{    opacity: 0, y:  10, scale: 0.7 }}
                 transition={{ duration: 0.14 }}
+                aria-live="polite"
               >
-                {qty}
+                {isSoldOut ? 0 : qty}
               </motion.span>
             </AnimatePresence>
             <motion.button
               whileTap={{ scale: 0.8 }}
-              className="w-9 h-9 rounded-xl bg-wt-accent flex items-center justify-center text-white"
-              onClick={() => setQty(q => Math.min(5, q + 1))}
+              className="w-9 h-9 rounded-xl bg-wt-accent flex items-center justify-center text-white disabled:cursor-not-allowed disabled:opacity-40"
+              onClick={() => setQty(q => Math.min(maxQuantity, q + 1))}
+              disabled={qty === maxQuantity || isSoldOut}
+              aria-label="Tambah jumlah tiket"
             >
               <Plus size={16} />
             </motion.button>
@@ -222,8 +232,9 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
             whileHover={{ boxShadow: '0 0 32px rgba(249,115,22,0.5)' }}
             whileTap={{ scale: 0.97 }}
             onClick={() => router.push(`/payment?eventId=${event.id}&qty=${qty}`)}
+            disabled={isSoldOut}
           >
-            Beli Tiket — {formatPrice(total)}
+            {isSoldOut ? 'Tiket Habis' : `Beli Tiket — ${formatPrice(total)}`}
           </motion.button>
         </div>
 
