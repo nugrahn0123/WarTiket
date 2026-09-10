@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import TopBar from '@/components/TopBar'
 import { myTickets, formatPrice } from '@/lib/dummy-data'
+import { getPurchasedTickets } from '@/lib/ticket-storage'
 import { Ticket } from 'lucide-react'
 
 type Status = 'aktif' | 'selesai' | 'dibatalkan'
@@ -23,8 +24,17 @@ const STATUS_CFG: Record<Status, { label: string; text: string; bg: string }> = 
 
 export default function TicketsPage() {
   const [tab, setTab] = useState<Status>('aktif')
+  const [purchasedTickets, setPurchasedTickets] = useState<typeof myTickets>([])
   const router = useRouter()
-  const list   = myTickets.filter(t => t.status === tab)
+  const list = [...purchasedTickets, ...myTickets].filter(ticket => ticket.status === tab)
+
+  useEffect(() => {
+    const refreshTickets = () => setPurchasedTickets(getPurchasedTickets())
+
+    refreshTickets()
+    window.addEventListener('storage', refreshTickets)
+    return () => window.removeEventListener('storage', refreshTickets)
+  }, [])
 
   return (
     <div className="flex flex-col pb-24">

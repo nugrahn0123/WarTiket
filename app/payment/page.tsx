@@ -12,6 +12,7 @@ import {
   getCheckout,
   SERVICE_FEE,
 } from '@/lib/checkout'
+import { savePurchasedTicket } from '@/lib/ticket-storage'
 
 const METHODS = [
   { id: 'transfer', label: 'Transfer', Icon: Landmark   },
@@ -57,6 +58,20 @@ function PaymentContent() {
     const invoice = createInvoiceNumber()
 
     setTimeout(() => {
+      savePurchasedTicket({
+        id: `TKT-${invoice.slice(4)}`,
+        eventId: event.id,
+        quantity,
+        totalPrice: total,
+        status: 'aktif',
+        invoiceNo: invoice,
+        purchasedAt: new Intl.DateTimeFormat('id-ID', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+        }).format(new Date()),
+        qrCode: `WARTIKET:${invoice}`,
+      })
       router.push(`/success?eventId=${event.id}&qty=${quantity}&method=${method}&invoice=${invoice}`)
     }, 1400)
   }
