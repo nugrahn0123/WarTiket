@@ -22,7 +22,10 @@ export default function TopBar({ variant = 'home', title }: TopBarProps) {
           <div className="flex gap-2">
             <motion.button
               whileTap={{ scale: 0.85 }}
-              className="w-9 h-9 rounded-full bg-wt-card border border-wt-border flex items-center justify-center"
+              className="w-9 h-9 rounded-full bg-wt-card border border-wt-border flex items-center justify-center disabled:cursor-not-allowed disabled:opacity-50"
+              aria-label="Notifikasi belum tersedia"
+              title="Notifikasi belum tersedia"
+              disabled
             >
               <Bell size={17} className="text-wt-muted" />
             </motion.button>
@@ -30,6 +33,7 @@ export default function TopBar({ variant = 'home', title }: TopBarProps) {
               whileTap={{ scale: 0.85 }}
               className="w-9 h-9 rounded-full bg-wt-card border border-wt-border flex items-center justify-center"
               onClick={() => router.push('/profile')}
+              aria-label="Buka profil"
             >
               <User size={17} className="text-wt-muted" />
             </motion.button>
@@ -46,6 +50,7 @@ export default function TopBar({ variant = 'home', title }: TopBarProps) {
           whileTap={{ scale: 0.85 }}
           onClick={() => router.back()}
           className="w-9 h-9 rounded-full bg-wt-card border border-wt-border flex items-center justify-center"
+          aria-label="Kembali"
         >
           <ArrowLeft size={18} className="text-wt-text" />
         </motion.button>

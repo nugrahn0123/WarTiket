@@ -39,9 +39,14 @@ export default function ExplorePage() {
             onChange={e => setQuery(e.target.value)}
             placeholder="Cari konser, artis, kota…"
             className="bg-transparent text-wt-text text-sm flex-1 outline-none placeholder:text-wt-muted"
+            aria-label="Cari konser, artis, kota, atau genre"
           />
           {query && (
-            <motion.button whileTap={{ scale: 0.85 }} onClick={() => setQuery('')}>
+            <motion.button
+              whileTap={{ scale: 0.85 }}
+              onClick={() => setQuery('')}
+              aria-label="Hapus pencarian"
+            >
               <X size={16} className="text-wt-muted" />
             </motion.button>
           )}

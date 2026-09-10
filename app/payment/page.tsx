@@ -123,6 +123,7 @@ function PaymentContent() {
                       : 'bg-wt-card border-wt-border'
                   }`}
                   onClick={() => setMethod(m.id)}
+                  aria-pressed={method === m.id}
                 >
                   <Icon size={22} className={method === m.id ? 'text-wt-accent' : 'text-wt-muted'} strokeWidth={1.8} />
                   <span className={`text-[11px] font-semibold ${method === m.id ? 'text-wt-accent' : 'text-wt-muted'}`}>
@@ -142,6 +143,7 @@ function PaymentContent() {
           whileTap={!loading ? { scale: 0.97 } : {}}
           onClick={handlePay}
           disabled={loading}
+          aria-busy={loading}
         >
           {loading ? (
             <motion.div className="flex items-center justify-center gap-2" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>

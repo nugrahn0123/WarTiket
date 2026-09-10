@@ -95,6 +95,7 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
           className="absolute top-4 left-4 w-9 h-9 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center"
           whileTap={{ scale: 0.82 }}
           onClick={() => router.back()}
+          aria-label="Kembali"
         >
           <ArrowLeft size={18} className="text-white" />
         </motion.button>
@@ -222,6 +223,8 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
               liked ? 'bg-wt-red/15 border-wt-red/50' : 'bg-wt-card border-wt-border'
             }`}
             onClick={() => setLiked(v => !v)}
+            aria-label={liked ? 'Hapus dari favorit' : 'Tambahkan ke favorit'}
+            aria-pressed={liked}
           >
             <Heart size={20} className={liked ? 'fill-wt-red text-wt-red' : 'text-wt-muted'} />
           </motion.button>
