@@ -3,8 +3,9 @@
 import { Suspense } from 'react'
 import { motion } from 'framer-motion'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Check } from 'lucide-react'
-import { events, formatPrice } from '@/lib/dummy-data'
+import { AlertTriangle, Check } from 'lucide-react'
+import { formatPrice } from '@/lib/dummy-data'
+import { calculateOrderTotal, getCheckout } from '@/lib/checkout'
 
 const METHOD_LABELS: Record<string, string> = {
   transfer: 'Transfer Bank',
@@ -16,14 +17,29 @@ const METHOD_LABELS: Record<string, string> = {
 function SuccessContent() {
   const router       = useRouter()
   const searchParams = useSearchParams()
+  const checkout     = getCheckout(searchParams)
+  const method       = searchParams.get('method')
 
-  const eventId  = parseInt(searchParams.get('eventId') ?? '1')
-  const qty      = parseInt(searchParams.get('qty')     ?? '1')
-  const total    = parseInt(searchParams.get('total')   ?? '0')
-  const method   = searchParams.get('method')           ?? 'transfer'
-  const event    = events.find(e => e.id === eventId)
+  if (!checkout || !method || !(method in METHOD_LABELS)) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center px-5 text-center">
+        <AlertTriangle size={48} className="mb-4 text-wt-yellow" strokeWidth={1.5} />
+        <h1 className="text-xl font-bold text-wt-text">Konfirmasi tidak valid</h1>
+        <p className="mt-2 max-w-xs text-sm leading-relaxed text-wt-muted">
+          Data pembayaran tidak lengkap atau sudah diubah.
+        </p>
+        <button
+          className="mt-6 rounded-xl bg-wt-accent px-5 py-3 text-sm font-bold text-white"
+          onClick={() => router.push('/')}
+        >
+          Kembali ke Beranda
+        </button>
+      </div>
+    )
+  }
 
-  if (!event) { router.push('/'); return null }
+  const { event, quantity } = checkout
+  const total = calculateOrderTotal(event.price, quantity)
 
   const date   = new Date()
   const pad    = (n: number) => String(n).padStart(2, '0')
@@ -32,7 +48,7 @@ function SuccessContent() {
   const rows = [
     { k: 'No. Invoice', v: invoice },
     { k: 'Konser',      v: event.title },
-    { k: 'Jumlah',      v: `${qty} tiket` },
+    { k: 'Jumlah',      v: `${quantity} tiket` },
     { k: 'Total Bayar', v: formatPrice(total), accent: true },
     { k: 'Metode',      v: METHOD_LABELS[method] ?? method },
   ]

@@ -50,7 +50,7 @@ function PaymentContent() {
   const handlePay = () => {
     setLoading(true)
     setTimeout(() => {
-      router.push(`/success?eventId=${event.id}&qty=${quantity}&total=${total}&method=${method}`)
+      router.push(`/success?eventId=${event.id}&qty=${quantity}&method=${method}`)
     }, 1400)
   }
 
