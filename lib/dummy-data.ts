@@ -211,6 +211,10 @@ export function formatPrice(price: number): string {
   return `Rp ${price.toLocaleString('id-ID')}`
 }
 
+export function formatNumber(value: number): string {
+  return value.toLocaleString('id-ID')
+}
+
 export function getSeatsColor(seats: number, total: number): 'green' | 'yellow' | 'red' {
   const ratio = seats / total
   if (ratio > 0.3) return 'green'

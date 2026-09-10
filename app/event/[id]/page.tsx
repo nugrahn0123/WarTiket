@@ -8,7 +8,7 @@ import {
   ArrowLeft, Heart, MapPin, Calendar, Music, Users,
   ChevronDown, ChevronUp, Minus, Plus, TicketX,
 } from 'lucide-react'
-import { events, formatPrice, getSeatsColor } from '@/lib/dummy-data'
+import { events, formatNumber, formatPrice, getSeatsColor } from '@/lib/dummy-data'
 import { MAX_TICKETS_PER_ORDER } from '@/lib/checkout'
 
 export default function EventDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -55,7 +55,7 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
     { label: 'Tanggal',   value: event.date,               icon: <Calendar size={13} className="text-wt-accent2" /> },
     { label: 'Venue',     value: event.venue,              icon: <MapPin   size={13} className="text-wt-accent2" /> },
     { label: 'Harga',     value: formatPrice(event.price), icon: <Music    size={13} className="text-wt-accent2" />, accent: true },
-    { label: 'Sisa Kursi',value: event.seats.toLocaleString(), icon: <Users size={13} className={colorMap.text} /> },
+    { label: 'Sisa Kursi',value: formatNumber(event.seats), icon: <Users size={13} className={colorMap.text} /> },
   ]
 
   return (
@@ -143,7 +143,7 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
           <div className="flex justify-between items-center mb-2">
             <span className="text-xs text-wt-muted font-semibold">Ketersediaan Kursi</span>
             <span className={`text-xs font-bold ${colorMap.text}`}>
-              {event.seats.toLocaleString()} / {event.totalSeats.toLocaleString()}
+              {formatNumber(event.seats)} / {formatNumber(event.totalSeats)}
             </span>
           </div>
           <div className="w-full h-1.5 bg-wt-border rounded-full overflow-hidden">

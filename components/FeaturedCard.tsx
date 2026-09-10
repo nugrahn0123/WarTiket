@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { Flame, MapPin, Calendar } from 'lucide-react'
-import { type Event, formatPrice } from '@/lib/dummy-data'
+import { type Event, formatNumber, formatPrice } from '@/lib/dummy-data'
 
 // Abstract cover-art decoration – 4 rotating patterns
 function CoverDeco({ id }: { id: number }) {
@@ -88,7 +88,7 @@ export default function FeaturedCard({ event }: { event: Event }) {
           </div>
           <div className="flex items-center justify-between">
             <span className="text-[16px] font-black text-wt-accent">{formatPrice(event.price)}</span>
-            <span className="text-[11px] text-wt-muted">{event.seats.toLocaleString()} kursi</span>
+            <span className="text-[11px] text-wt-muted">{formatNumber(event.seats)} kursi</span>
           </div>
         </div>
       </motion.article>

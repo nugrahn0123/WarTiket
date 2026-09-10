@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import BottomNavWrapper from '@/components/BottomNavWrapper'
+import MotionProvider from '@/components/MotionProvider'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -17,8 +18,6 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
   themeColor: '#0a0a0f',
 }
 
@@ -30,12 +29,14 @@ export default function RootLayout({
   return (
     <html lang="id" className={inter.variable}>
       <body className="bg-wt-bg font-sans">
-        <div className="flex justify-center min-h-screen bg-wt-bg">
-          <div className="w-full max-w-[430px] bg-wt-surface min-h-screen relative overflow-x-hidden">
-            {children}
-            <BottomNavWrapper />
+        <MotionProvider>
+          <div className="flex justify-center min-h-screen bg-wt-bg">
+            <div className="w-full max-w-[430px] bg-wt-surface min-h-screen relative overflow-x-hidden">
+              {children}
+              <BottomNavWrapper />
+            </div>
           </div>
-        </div>
+        </MotionProvider>
       </body>
     </html>
   )

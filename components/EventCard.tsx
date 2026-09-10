@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { Calendar, MapPin } from 'lucide-react'
-import { type Event, formatPrice, getSeatsColor } from '@/lib/dummy-data'
+import { type Event, formatNumber, formatPrice, getSeatsColor } from '@/lib/dummy-data'
 
 function MiniCover({ gradient, id }: { gradient: string; id: number }) {
   return (
@@ -59,7 +59,7 @@ export default function EventCard({ event }: { event: Event }) {
           <div className="flex items-center justify-between">
             <span className="text-[14px] font-black text-wt-accent tracking-tight">{formatPrice(event.price)}</span>
             <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${badge}`}>
-              {event.seats.toLocaleString()} tersisa
+              {formatNumber(event.seats)} tersisa
             </span>
           </div>
         </div>
