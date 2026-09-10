@@ -1,1 +1,16 @@
-node_modules
+node_modules/
+.next/
+out/
+
+# Local environment files
+.env*
+!.env.example
+
+# Logs and build metadata
+*.log
+*.tsbuildinfo
+
+# Deployment and editor artifacts
+.vercel/
+.DS_Store
+Thumbs.db
